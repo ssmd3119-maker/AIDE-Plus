@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<!-- Material 3 colors of the AIDE+ theme. Android 10-11: fixed palette -->
+	<!-- light -->
+	<color name="aideplus_primary_light">#FF3F5F90</color>
+	<color name="aideplus_on_primary_light">#FFFFFFFF</color>
+	<color name="aideplus_primary_container_light">#FFD6E3FF</color>
+	<color name="aideplus_on_primary_container_light">#FF001B3E</color>
+	<color name="aideplus_secondary_container_light">#FFDAE2F9</color>
+	<color name="aideplus_on_secondary_container_light">#FF131C2B</color>
+	<color name="aideplus_background_light">#FFF9F9FF</color>
+	<color name="aideplus_surface_container_low_light">#FFF3F3FA</color>
+	<color name="aideplus_surface_container_light">#FFEDEDF4</color>
+	<color name="aideplus_surface_container_high_light">#FFE7E8EE</color>
+	<color name="aideplus_surface_container_highest_light">#FFE2E2E9</color>
+	<color name="aideplus_on_surface_light">#FF191C20</color>
+	<color name="aideplus_on_surface_variant_light">#FF44474E</color>
+	<color name="aideplus_outline_light">#FF74777F</color>
+	<color name="aideplus_outline_variant_light">#FFC4C6D0</color>
+	<!-- dark -->
+	<color name="aideplus_primary_dark">#FFA8C8FF</color>
+	<color name="aideplus_on_primary_dark">#FF07305F</color>
+	<color name="aideplus_primary_container_dark">#FF254777</color>
+	<color name="aideplus_on_primary_container_dark">#FFD6E3FF</color>
+	<color name="aideplus_secondary_container_dark">#FF3E4759</color>
+	<color name="aideplus_on_secondary_container_dark">#FFDAE2F9</color>
+	<color name="aideplus_background_dark">#FF111318</color>
+	<color name="aideplus_surface_container_low_dark">#FF191C20</color>
+	<color name="aideplus_surface_container_dark">#FF1D2024</color>
+	<color name="aideplus_surface_container_high_dark">#FF282A2F</color>
+	<color name="aideplus_surface_container_highest_dark">#FF33353A</color>
+	<color name="aideplus_on_surface_dark">#FFE2E2E9</color>
+	<color name="aideplus_on_surface_variant_dark">#FFC4C6D0</color>
+	<color name="aideplus_outline_dark">#FF8E9099</color>
+	<color name="aideplus_outline_variant_dark">#FF44474E</color>
+</resources>
