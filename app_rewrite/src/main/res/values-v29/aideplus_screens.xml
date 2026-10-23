@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<!-- AIDE+ look of the main screen, file browser and editor header. These
+	     replace AIDE's styles of the same name. -->
+
+	<!-- Empty editor -->
+	<style name="EmptyEditorBackground">
+		<item name="android:background">?color_app_background</item>
+	</style>
+	<style name="EmptyEditorLabel">
+		<item name="android:textSize">20sp</item>
+		<item name="android:fontFamily">sans-serif-medium</item>
+		<item name="android:textColor">?color_browser_label</item>
+		<item name="android:background">?android:selectableItemBackground</item>
+		<item name="android:paddingStart">16dp</item>
+		<item name="android:paddingEnd">16dp</item>
+		<item name="android:paddingTop">8dp</item>
+		<item name="android:paddingBottom">4dp</item>
+	</style>
+	<style name="AidePlus.EmptyEditorHint" parent="">
+		<item name="android:textSize">14sp</item>
+		<item name="android:textColor">?color_browser_label_gray</item>
+	</style>
+
+	<!-- Search bar -->
+	<style name="SearchLabel">
+		<item name="android:textSize">14sp</item>
+		<item name="android:fontFamily">sans-serif-medium</item>
+		<item name="android:textColor">?android:textColorSecondary</item>
+	</style>
+	<style name="SearchEditText">
+		<item name="android:textSize">16sp</item>
+		<item name="android:textColor">?android:textColorPrimary</item>
+		<item name="android:textColorHint">?android:textColorSecondary</item>
+		<item name="android:background">@drawable/aideplus_search_bg</item>
+		<item name="android:inputType">textVisiblePassword|textNoSuggestions</item>
+		<item name="android:imeOptions">flagNoExtractUi</item>
+	</style>
+
+	<!-- File browser and editor header -->
+	<style name="BrowserImage">
+		<item name="android:gravity">center</item>
+		<item name="android:layout_width">32dp</item>
+		<item name="android:layout_height">32dp</item>
+		<item name="android:scaleType">centerInside</item>
+	</style>
+	<style name="BrowserHeaderImage">
+		<item name="android:gravity">center</item>
+		<item name="android:layout_width">40dp</item>
+		<item name="android:layout_height">40dp</item>
+		<item name="android:scaleType">centerInside</item>
+	</style>
+	<style name="BrowserLabelLarge">
+		<item name="android:textSize">16sp</item>
+		<item name="android:textColor">?color_browser_label</item>
+	</style>
+	<style name="BrowserHeaderLabel">
+		<item name="android:textSize">16sp</item>
+		<item name="android:fontFamily">sans-serif-medium</item>
+		<item name="android:textColor">?color_browser_label</item>
+	</style>
+	<style name="BrowserHeaderLabelSmallGray">
+		<item name="android:textSize">12sp</item>
+		<item name="android:textColor">?color_browser_label_gray</item>
+	</style>
+	<style name="BrowserHeaderBackgroundInner">
+		<item name="android:background">?android:selectableItemBackground</item>
+		<item name="android:minHeight">64dp</item>
+	</style>
+</resources>

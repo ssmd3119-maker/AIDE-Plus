@@ -63,6 +63,10 @@
 		<item name="android:popupMenuStyle">@style/AidePlus.PopupMenu.Light</item>
 		<item name="android:actionOverflowMenuStyle">@style/AidePlus.PopupMenu.Overflow.Light</item>
 		<item name="android:listPopupWindowStyle">@style/AidePlus.ListPopupWindow.Light</item>
+		<item name="aideplusPrimaryContainer">@color/aideplus_primary_container_light</item>
+		<item name="aideplusOnPrimaryContainer">@color/aideplus_on_primary_container_light</item>
+		<item name="aideplusSurfaceContainerLow">@color/aideplus_surface_container_low_light</item>
+		<item name="aideplusSurfaceContainerHighest">@color/aideplus_surface_container_highest_light</item>
 		<item name="android:actionBarStyle">@style/AidePlus.ActionBar.Light</item>
 		<item name="android:actionBarTabBarStyle">@style/AidePlus.ActionBar.TabBar.Light</item>
 	</style>
@@ -101,6 +105,10 @@
 		<item name="android:popupMenuStyle">@style/AidePlus.PopupMenu.Light</item>
 		<item name="android:actionOverflowMenuStyle">@style/AidePlus.PopupMenu.Overflow.Light</item>
 		<item name="android:listPopupWindowStyle">@style/AidePlus.ListPopupWindow.Light</item>
+		<item name="aideplusPrimaryContainer">@color/aideplus_primary_container_light</item>
+		<item name="aideplusOnPrimaryContainer">@color/aideplus_on_primary_container_light</item>
+		<item name="aideplusSurfaceContainerLow">@color/aideplus_surface_container_low_light</item>
+		<item name="aideplusSurfaceContainerHighest">@color/aideplus_surface_container_highest_light</item>
 	</style>
 
 	<!-- Settings -->
@@ -128,6 +136,10 @@
 		<item name="android:popupMenuStyle">@style/AidePlus.PopupMenu.Light</item>
 		<item name="android:actionOverflowMenuStyle">@style/AidePlus.PopupMenu.Overflow.Light</item>
 		<item name="android:listPopupWindowStyle">@style/AidePlus.ListPopupWindow.Light</item>
+		<item name="aideplusPrimaryContainer">@color/aideplus_primary_container_light</item>
+		<item name="aideplusOnPrimaryContainer">@color/aideplus_on_primary_container_light</item>
+		<item name="aideplusSurfaceContainerLow">@color/aideplus_surface_container_low_light</item>
+		<item name="aideplusSurfaceContainerHighest">@color/aideplus_surface_container_highest_light</item>
 		<item name="android:actionBarStyle">@style/AidePlus.ActionBar.Light</item>
 		<item name="android:listDivider">@android:color/transparent</item>
 	</style>
@@ -149,6 +161,10 @@
 		<item name="android:popupMenuStyle">@style/AidePlus.PopupMenu.Light</item>
 		<item name="android:actionOverflowMenuStyle">@style/AidePlus.PopupMenu.Overflow.Light</item>
 		<item name="android:listPopupWindowStyle">@style/AidePlus.ListPopupWindow.Light</item>
+		<item name="aideplusPrimaryContainer">@color/aideplus_primary_container_light</item>
+		<item name="aideplusOnPrimaryContainer">@color/aideplus_on_primary_container_light</item>
+		<item name="aideplusSurfaceContainerLow">@color/aideplus_surface_container_low_light</item>
+		<item name="aideplusSurfaceContainerHighest">@color/aideplus_surface_container_highest_light</item>
 		<item name="android:windowElevation">6dp</item>
 		<item name="android:buttonBarButtonStyle">@style/AidePlus.DialogButton.Light</item>
 		<item name="android:windowTitleStyle">@style/AidePlus.DialogTitle.Light</item>
@@ -170,6 +186,10 @@
 		<item name="android:popupMenuStyle">@style/AidePlus.PopupMenu.Light</item>
 		<item name="android:actionOverflowMenuStyle">@style/AidePlus.PopupMenu.Overflow.Light</item>
 		<item name="android:listPopupWindowStyle">@style/AidePlus.ListPopupWindow.Light</item>
+		<item name="aideplusPrimaryContainer">@color/aideplus_primary_container_light</item>
+		<item name="aideplusOnPrimaryContainer">@color/aideplus_on_primary_container_light</item>
+		<item name="aideplusSurfaceContainerLow">@color/aideplus_surface_container_low_light</item>
+		<item name="aideplusSurfaceContainerHighest">@color/aideplus_surface_container_highest_light</item>
 		<item name="android:windowElevation">6dp</item>
 		<item name="android:buttonBarButtonStyle">@style/AidePlus.DialogButton.Light</item>
 		<item name="android:windowTitleStyle">@style/AidePlus.DialogTitle.Light</item>
@@ -233,6 +253,10 @@
 		<item name="android:popupMenuStyle">@style/AidePlus.PopupMenu.Dark</item>
 		<item name="android:actionOverflowMenuStyle">@style/AidePlus.PopupMenu.Overflow.Dark</item>
 		<item name="android:listPopupWindowStyle">@style/AidePlus.ListPopupWindow.Dark</item>
+		<item name="aideplusPrimaryContainer">@color/aideplus_primary_container_dark</item>
+		<item name="aideplusOnPrimaryContainer">@color/aideplus_on_primary_container_dark</item>
+		<item name="aideplusSurfaceContainerLow">@color/aideplus_surface_container_low_dark</item>
+		<item name="aideplusSurfaceContainerHighest">@color/aideplus_surface_container_highest_dark</item>
 		<item name="color_page_separator">@color/aideplus_outline_variant_dark</item>
 		<item name="android:actionBarStyle">@style/AidePlus.ActionBar.Dark</item>
 		<item name="android:actionBarTabBarStyle">@style/AidePlus.ActionBar.TabBar.Dark</item>
@@ -272,6 +296,10 @@
 		<item name="android:popupMenuStyle">@style/AidePlus.PopupMenu.Dark</item>
 		<item name="android:actionOverflowMenuStyle">@style/AidePlus.PopupMenu.Overflow.Dark</item>
 		<item name="android:listPopupWindowStyle">@style/AidePlus.ListPopupWindow.Dark</item>
+		<item name="aideplusPrimaryContainer">@color/aideplus_primary_container_dark</item>
+		<item name="aideplusOnPrimaryContainer">@color/aideplus_on_primary_container_dark</item>
+		<item name="aideplusSurfaceContainerLow">@color/aideplus_surface_container_low_dark</item>
+		<item name="aideplusSurfaceContainerHighest">@color/aideplus_surface_container_highest_dark</item>
 	</style>
 
 	<!-- Settings -->
@@ -299,6 +327,10 @@
 		<item name="android:popupMenuStyle">@style/AidePlus.PopupMenu.Dark</item>
 		<item name="android:actionOverflowMenuStyle">@style/AidePlus.PopupMenu.Overflow.Dark</item>
 		<item name="android:listPopupWindowStyle">@style/AidePlus.ListPopupWindow.Dark</item>
+		<item name="aideplusPrimaryContainer">@color/aideplus_primary_container_dark</item>
+		<item name="aideplusOnPrimaryContainer">@color/aideplus_on_primary_container_dark</item>
+		<item name="aideplusSurfaceContainerLow">@color/aideplus_surface_container_low_dark</item>
+		<item name="aideplusSurfaceContainerHighest">@color/aideplus_surface_container_highest_dark</item>
 		<item name="android:actionBarStyle">@style/AidePlus.ActionBar.Dark</item>
 		<item name="android:listDivider">@android:color/transparent</item>
 	</style>
@@ -320,6 +352,10 @@
 		<item name="android:popupMenuStyle">@style/AidePlus.PopupMenu.Dark</item>
 		<item name="android:actionOverflowMenuStyle">@style/AidePlus.PopupMenu.Overflow.Dark</item>
 		<item name="android:listPopupWindowStyle">@style/AidePlus.ListPopupWindow.Dark</item>
+		<item name="aideplusPrimaryContainer">@color/aideplus_primary_container_dark</item>
+		<item name="aideplusOnPrimaryContainer">@color/aideplus_on_primary_container_dark</item>
+		<item name="aideplusSurfaceContainerLow">@color/aideplus_surface_container_low_dark</item>
+		<item name="aideplusSurfaceContainerHighest">@color/aideplus_surface_container_highest_dark</item>
 		<item name="android:windowElevation">6dp</item>
 		<item name="android:buttonBarButtonStyle">@style/AidePlus.DialogButton.Dark</item>
 		<item name="android:windowTitleStyle">@style/AidePlus.DialogTitle.Dark</item>
@@ -341,6 +377,10 @@
 		<item name="android:popupMenuStyle">@style/AidePlus.PopupMenu.Dark</item>
 		<item name="android:actionOverflowMenuStyle">@style/AidePlus.PopupMenu.Overflow.Dark</item>
 		<item name="android:listPopupWindowStyle">@style/AidePlus.ListPopupWindow.Dark</item>
+		<item name="aideplusPrimaryContainer">@color/aideplus_primary_container_dark</item>
+		<item name="aideplusOnPrimaryContainer">@color/aideplus_on_primary_container_dark</item>
+		<item name="aideplusSurfaceContainerLow">@color/aideplus_surface_container_low_dark</item>
+		<item name="aideplusSurfaceContainerHighest">@color/aideplus_surface_container_highest_dark</item>
 		<item name="android:windowElevation">6dp</item>
 		<item name="android:buttonBarButtonStyle">@style/AidePlus.DialogButton.Dark</item>
 		<item name="android:windowTitleStyle">@style/AidePlus.DialogTitle.Dark</item>

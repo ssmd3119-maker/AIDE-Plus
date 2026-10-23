@@ -37,6 +37,10 @@ def palette(m, window=True):
         'android:popupMenuStyle':f'@style/AidePlus.PopupMenu.{m.title()}',
         'android:actionOverflowMenuStyle':f'@style/AidePlus.PopupMenu.Overflow.{m.title()}',
         'android:listPopupWindowStyle':f'@style/AidePlus.ListPopupWindow.{m.title()}',
+        'aideplusPrimaryContainer':c('primary_container',m),
+        'aideplusOnPrimaryContainer':c('on_primary_container',m),
+        'aideplusSurfaceContainerLow':c('surface_container_low',m),
+        'aideplusSurfaceContainerHighest':c('surface_container_highest',m),
     })
     return o
 def aide_colors(m):

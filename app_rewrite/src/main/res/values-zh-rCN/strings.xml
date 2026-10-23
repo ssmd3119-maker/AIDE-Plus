@@ -1802,4 +1802,5 @@
 	<string name="view_toast_passed_end_of_file">文件传递结束</string>
 	<string name="view_toast_press_back">再按一次返回键退出</string>
 	<string name="view_toast_switched_variant">已切换至构建分支：%1$s</string>
+	<string name="aideplus_no_open_files_hint">从文件浏览器中打开文件</string>
 </resources>

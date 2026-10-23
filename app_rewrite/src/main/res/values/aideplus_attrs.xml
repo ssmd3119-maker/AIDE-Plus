@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<!-- AIDE+ theme colors that layouts and drawables need besides the android ones -->
+	<attr name="aideplusPrimaryContainer" format="color" />
+	<attr name="aideplusOnPrimaryContainer" format="color" />
+	<attr name="aideplusSurfaceContainerLow" format="color" />
+	<attr name="aideplusSurfaceContainerHighest" format="color" />
+</resources>

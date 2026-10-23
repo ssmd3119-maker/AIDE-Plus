@@ -9,5 +9,6 @@
 	
 	<string name="refresh_maven_repository_tips">Tips</string>
 	<string name="refresh_maven_repository_tips_message">Are you sure you want to refresh Maven warehouse?</string>
+	<string name="aideplus_no_open_files_hint">Open a file from the file browser</string>
 	
 </resources>
