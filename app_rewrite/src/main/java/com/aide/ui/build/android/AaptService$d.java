@@ -16,7 +16,7 @@ import java.util.concurrent.FutureTask;
 import io.github.zeroaicy.util.Log;
 import io.github.zeroaicy.aide.ui.services.ThreadPoolService;
 
-class AaptService$d extends FutureTask<AaptService$b> {
+public class AaptService$d extends FutureTask<AaptService$b> {
 
 
     final AaptService aaptService;

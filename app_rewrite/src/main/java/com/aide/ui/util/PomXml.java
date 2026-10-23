@@ -29,7 +29,7 @@ public class PomXml extends Configuration<PomXml> {
 
 	
     public static PomXml empty = new PomXml(true);
-	private final boolean isEmpty;
+	private boolean isEmpty;
 	public boolean isEmpty() {
 		return this.isEmpty;
 	}

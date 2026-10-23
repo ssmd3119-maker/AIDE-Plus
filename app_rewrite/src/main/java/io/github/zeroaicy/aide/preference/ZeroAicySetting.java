@@ -1,6 +1,6 @@
 package io.github.zeroaicy.aide.preference;
 
-import android.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;

@@ -46,8 +46,8 @@ public class AaptServiceArgs {
 
 	public final PrintStream log;
 
-	public final int defaultMinSdk;
-	public final int defaultTargetSdk;
+	public int defaultMinSdk;
+	public int defaultTargetSdk;
 
 
 	private DataBindingBuilderProxy dataBindingBuilder;
@@ -72,7 +72,7 @@ public class AaptServiceArgs {
 	//主项目的res
 	public String mainProjectResPath;
 
-	public final boolean shrinkResources;
+	public boolean shrinkResources;
 
 	public AaptServiceArgs(Object mAaptS$c_Object) {
 

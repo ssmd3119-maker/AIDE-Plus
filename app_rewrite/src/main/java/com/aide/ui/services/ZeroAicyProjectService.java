@@ -3,6 +3,8 @@ package com.aide.ui.services;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import androidx.core.content.ContextCompat;
 import android.content.SharedPreferences;
 import android.view.Window;
 import com.aide.engine.EngineSolution;
@@ -440,7 +442,7 @@ public class ZeroAicyProjectService extends ProjectService {
 		SharedPreferences sharedPreferences = ServiceContainer.getContext().getSharedPreferences("ProjectService", Context.MODE_PRIVATE);
 
 		if (!ServiceContainer.isTrainerMode() 
-			&& ServiceContainer.getMainActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+			&& ContextCompat.checkSelfPermission(ServiceContainer.getMainActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
 			if (projectPath != null) {
 				saveCurrentAppHome(SI(projectPath));
 			} else {

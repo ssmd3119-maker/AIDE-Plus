@@ -21,7 +21,7 @@ public abstract class PackagingWorkerWrapper extends ExternalPackagingService.Ex
 	private String noBackupFilesDirPath;
 	public PackagingWorkerWrapper(ExternalPackagingService externalPackagingService) {
 		//父类没有使用封闭类[ExternalPackagingService]
-		null.super();
+		externalPackagingService.super();
 		this.externalPackagingService = externalPackagingService;
 	}
 	public String getUserAndroidJar() {
@@ -178,7 +178,7 @@ public abstract class PackagingWorkerWrapper extends ExternalPackagingService.Ex
 				} else {
 					this.androidFxtractNativeLibs = androidManifestParser.getExtractNativeLibs();
 
-					final int androidProject ;
+					int androidProject;
 					try {
 						String minSdkVersion = androidManifestParser.getMinSdkVersion();
 						androidProject = Integer.parseInt(minSdkVersion);

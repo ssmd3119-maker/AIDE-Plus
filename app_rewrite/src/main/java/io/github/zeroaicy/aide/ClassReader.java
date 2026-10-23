@@ -209,7 +209,7 @@ public class ClassReader {
 	private static boolean hasDefaultMethod2(String s) {
 		try {
 			if (isDynamic) {
-				return hasDefaultMethod.invoke(null, s);
+				return (boolean) hasDefaultMethod.invoke(null, s);
 			} else if (isDirect) {
 				return DefaultMethodAllowedList.hasDefaultMethod(s);
 			}

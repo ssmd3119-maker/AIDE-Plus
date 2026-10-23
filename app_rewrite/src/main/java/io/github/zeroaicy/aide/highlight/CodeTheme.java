@@ -51,7 +51,7 @@ public class CodeTheme {
 
 		// 加载自定义高亮
 		Map<String, ?> customColorMap = codeThemePreferences.getAll();
-		Set<Map.Entry<String, ?>> entrySet = customColorMap.entrySet();
+		Set<? extends Map.Entry<String, ?>> entrySet = customColorMap.entrySet();
 		entrySet.removeIf(new Predicate<Map.Entry<String, ?>>(){
 				@Override
 				public boolean test(Map.Entry<String, ?> entry) {
