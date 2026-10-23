@@ -27,6 +27,7 @@ stableIds.withWriter('UTF-8') { w ->
 android {
     namespace 'io.github.zeroaicy.aide'
     compileSdk rootProject.compileSdk
+    buildToolsVersion '37.0.0'
 
     defaultConfig {
         applicationId 'io.github.zeroaicy.aide'
@@ -90,8 +91,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     lint {
@@ -234,7 +235,7 @@ androidComponents {
             apkDir.set(variant.artifacts.get(SingleArtifact.APK.INSTANCE))
             loader.set(variant.artifacts.builtArtifactsLoader)
             dexJars.from(prebuiltDexJars)
-            buildToolsDir.set(android.sdkDirectory.path + '/build-tools/' + android.buildToolsVersion)
+            buildToolsDir.set(androidComponents.sdkComponents.sdkDirectory.map { it.dir('build-tools/' + android.buildToolsVersion).asFile.path })
             keystore.set(signing.storeFile)
             storePassword.set(signing.storePassword)
             keyAlias.set(signing.keyAlias)

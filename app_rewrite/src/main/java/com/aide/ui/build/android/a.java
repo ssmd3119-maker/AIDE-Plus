@@ -237,10 +237,8 @@ public class a {
             if (v5) {
                 iy.gn(36354047737288176L, this);
             }
-            if (Build.VERSION.SDK_INT >= 29) {
-                return ServiceContainer.getContext().getApplicationInfo().nativeLibraryDir + "/libaidl.so";
-            }
-            return AssetInstallationService.DW("aidl", false);
+            // Android 10+ only runs binaries from the native library directory
+            return ServiceContainer.getContext().getApplicationInfo().nativeLibraryDir + "/libaidl.so";
         } catch (Throwable th) {
             if (Zo) {
                 iy.aM(th, 36354047737288176L, this);

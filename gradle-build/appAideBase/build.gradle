@@ -27,8 +27,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 }
 
@@ -37,11 +37,11 @@ dependencies {
 
     api 'dev.rikka.shizuku:provider:13.1.5'
     api 'dev.rikka.shizuku:api:13.1.5'
-    api 'androidx.browser:browser:1.6.0'
+    api 'androidx.browser:browser:1.10.0'
     api 'androidx.drawerlayout:drawerlayout:1.2.0'
-    api 'androidx.legacy:legacy-support-v4:1.0.0'
-    api 'androidx.multidex:multidex:2.0.1'
-    api 'androidx.annotation:annotation:1.7.1'
+    // ActionBarDrawerToggle; the rest of legacy-support-v4 is unused
+    api 'androidx.legacy:legacy-support-core-ui:1.0.0'
+    api 'androidx.annotation:annotation:1.11.0'
 
     // Prebuilt AIDE classes (stub api); the dex itself is added to the apk by :app_flavor
     compileOnly fileTree(fixedApiJars.flatMap { it.outputDir }) { builtBy fixedApiJars }

@@ -212,11 +212,9 @@ public class AaptService {
     }
 
     private String we() {
-		if (Build.VERSION.SDK_INT >= 29) {
-			AppLog.DW("Using aapt: " + ServiceContainer.getContext().getApplicationInfo().nativeLibraryDir + "/libaapt.so");
-			return ServiceContainer.getContext().getApplicationInfo().nativeLibraryDir + "/libaapt.so";
-		}
-		return AssetInstallationService.DW("aapt", false);
+		// Android 10+ only runs binaries from the native library directory
+		AppLog.DW("Using aapt: " + ServiceContainer.getContext().getApplicationInfo().nativeLibraryDir + "/libaapt.so");
+		return ServiceContainer.getContext().getApplicationInfo().nativeLibraryDir + "/libaapt.so";
     }
 
     public void EQ(String str) {

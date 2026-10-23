@@ -4,13 +4,13 @@ package com.aide.ui;
 // Decompiled by Jadx - 508ms
 //
 
-import androidx.multidex.MultiDexApplication;
+import android.app.Application;
 import com.aide.ui.marketing.b;
 import com.aide.ui.rewrite.R;
 import io.github.zeroaicy.util.ContextUtil;
 import abcd.iy;
 
-public class AIDEApplication extends MultiDexApplication{
+public class AIDEApplication extends Application {
 	public void onCreate() {
         super.onCreate();
 		// 开启错误打印

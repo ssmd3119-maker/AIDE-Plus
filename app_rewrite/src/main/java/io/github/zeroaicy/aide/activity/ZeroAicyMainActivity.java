@@ -377,23 +377,6 @@ public class ZeroAicyMainActivity extends MainActivity {
 			&& mimeTypeFromExtension != null 
 			&& !mimeTypeFromExtension.startsWith("text")) {
 
-			if (Build.VERSION.SDK_INT < 24) {
-				Intent intent = new Intent();
-				intent.setAction("android.intent.action.VIEW");
-				intent.setDataAndType(Uri.fromFile(new File(str)), mimeTypeFromExtension);
-				try {
-					gn(this, intent);
-					startActivity(intent);
-					iy.BT(this, intent);
-					return;
-				}
-				catch (ActivityNotFoundException unused) {
-					Context VH = ServiceContainer.getContext();
-					Toast.makeText(VH, "No handler found for type " + mimeTypeFromExtension, 0).show();
-					return;
-				}
-			}
-
 			return;
 		}
 		if (FileSystem.ei(str)) {
@@ -402,11 +385,6 @@ public class ZeroAicyMainActivity extends MainActivity {
 		aq(new FileSpan(str, 1, 1, 1, 1));
 		ServiceContainer.getProjectService().VH(str);
 
-    }
-
-	private static void gn(Object obj, Intent intent) {
-        ((MainActivity) obj).startActivity(intent);
-        iy.BT(obj, intent);
     }
 
 	@Override

@@ -200,21 +200,7 @@ class a$b {
                 iy.gn(-4342550339235996755L, this);
             }
             if (!Thread.interrupted()) {
-                if (Build.VERSION.SDK_INT < 29 && !a.Zo()) {
-                    try {
-                        j6 = xf.j6(Arrays.asList("/system/bin/chmod", "777", this.DW), null, null, true, (OutputStream) null, (byte[]) null);
-                    } catch (Exception unused) {
-                        wf j62 = xf.j6(Arrays.asList("/system/xbin/chmod", "777", this.DW), (String) null, null, true, (OutputStream) null, (byte[]) null);
-                        if (j62.DW() != 0) {
-                            throw new IOException("Could not make " + this.DW + " executable - exit code " + j62.DW());
-                        }
-                    }
-                    if (j6.DW() != 0) {
-                        throw new IOException("Could not make " + this.DW + " executable - exit code " + j6.DW());
-                    }
-                    a.VH(true);
-                    return;
-                }
+                // aidl runs from the native library directory on Android 10+, nothing to chmod
                 return;
             }
             throw new InterruptedException();

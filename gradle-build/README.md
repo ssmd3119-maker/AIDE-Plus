@@ -11,7 +11,7 @@ LC_ALL=C.UTF-8 ./gradlew assembleReleaseAidePlus
 # -> app_flavor/build/outputs/aide-plus/AIDE-Plus-release.apk
 ```
 
-Needs JDK 17+, the SDK platform `android-34` and build-tools `34.0.0`. Several
+Needs JDK 17+, the SDK platform `android-37.0` and build-tools `37.0.0` (Android Gradle Plugin 9.4, Gradle 9.8). Several
 jars have Chinese file names, so the JVM needs a UTF-8 locale (`LC_ALL=C.UTF-8`).
 
 What it does beyond a plain Android build:

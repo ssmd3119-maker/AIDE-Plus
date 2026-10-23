@@ -33,16 +33,11 @@ public class AssetInstallationService {
 		}
 	}
 	private static AssetFileDescriptor getResourceAssetFileDescriptor(String resourceName) {
-		if (ServiceContainer.Sf() && Build.VERSION.SDK_INT >= 20) {
+		// Android 10+ always needs the PIE binaries
+		if (ServiceContainer.Sf()) {
 			return tryGetAssetFileDescriptorFromAssetManager(resourceName, resourceName + ".jet", "x86-pie/" + resourceName, "x86/" + resourceName + ".jet");
 		}
-		if (ServiceContainer.Sf()) {
-			return tryGetAssetFileDescriptorFromAssetManager(resourceName, resourceName + ".jet", "x86/" + resourceName, "x86/" + resourceName + ".jet");
-		}
-		if (Build.VERSION.SDK_INT >= 20) {
-			return tryGetAssetFileDescriptorFromAssetManager(resourceName, resourceName + ".jet", "armeabi-pie/" + resourceName, "armeabi/" + resourceName + ".jet");
-		}
-		return tryGetAssetFileDescriptorFromAssetManager(resourceName, resourceName + ".jet", "armeabi/" + resourceName, "armeabi/" + resourceName + ".jet");
+		return tryGetAssetFileDescriptorFromAssetManager(resourceName, resourceName + ".jet", "armeabi-pie/" + resourceName, "armeabi/" + resourceName + ".jet");
     }
 
     private static AssetFileDescriptor tryGetAssetFileDescriptorFromAssetManager(String... resourceNames) {
@@ -95,16 +90,11 @@ public class AssetInstallationService {
     }
 
     private static InputStream getResourceInputStream(String resourceName) {
-		if (ServiceContainer.Sf() && Build.VERSION.SDK_INT >= 20) {
+		// Android 10+ always needs the PIE binaries
+		if (ServiceContainer.Sf()) {
 			return tryGetInputStreamFromAssetManager(resourceName, resourceName + ".jet", "x86-pie/" + resourceName, "x86/" + resourceName + ".jet");
 		}
-		if (ServiceContainer.Sf()) {
-			return tryGetInputStreamFromAssetManager(resourceName, resourceName + ".jet", "x86/" + resourceName, "x86/" + resourceName + ".jet");
-		}
-		if (Build.VERSION.SDK_INT >= 20) {
-			return tryGetInputStreamFromAssetManager(resourceName, resourceName + ".jet", "armeabi-pie/" + resourceName, "armeabi/" + resourceName + ".jet");
-		}
-		return tryGetInputStreamFromAssetManager(resourceName, resourceName + ".jet", "armeabi/" + resourceName, "armeabi/" + resourceName + ".jet");
+		return tryGetInputStreamFromAssetManager(resourceName, resourceName + ".jet", "armeabi-pie/" + resourceName, "armeabi/" + resourceName + ".jet");
     }
 
 

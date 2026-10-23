@@ -84,7 +84,6 @@ public class iy {
         try {
             synchronized (Hw) {
                 if (j6 == null 
-					&& Build.VERSION.SDK_INT >= 14 
 					&& application != null) {
                     j6 = application;
 					b00.FH(false);
@@ -100,7 +99,6 @@ public class iy {
         try {
             synchronized (Hw) {
                 if (j6 == null 
-				&& Build.VERSION.SDK_INT >= 14 
 				&& (application = FH(obj)) != null) {
                     j6 = application;
                 }

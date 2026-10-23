@@ -1,12 +1,15 @@
 plugins {
-    id 'com.android.application' version '8.7.3' apply false
-    id 'com.android.library' version '8.7.3' apply false
+    id 'com.android.application' version '9.4.1' apply false
+    id 'com.android.library' version '9.4.1' apply false
 }
 
 ext {
     // Root of the AIDE project sources
     srcRoot = file('..')
-    compileSdk = 34
-    minSdk = 24
+    compileSdk = 37
+    // Android 10
+    minSdk = 29
+    // Stays 28: AIDE runs aapt, aidl and other tools it extracts into its
+    // data directory, which targetSdk 29+ forbids (W^X)
     targetSdk = 28
 }

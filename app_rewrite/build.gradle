@@ -7,7 +7,7 @@ android {
 	ndkVersion "24.0.8215888"
     defaultConfig {
         applicationId "com.aide.ui.rewrite"
-        minSdkVersion 24
+        minSdkVersion 29
         targetSdkVersion 28
         versionCode 2008210017
         versionName "3.2.210316"
@@ -29,9 +29,9 @@ dependencies {
 	
 	compileOnly fileTree(dir: 'provider', include: ['.jar'])
 	
-	api "androidx.core:core:1.13.0"
-	api "androidx.preference:preference:+"
-	api "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0"
+	api "androidx.core:core:1.19.1"
+	api "androidx.preference:preference:1.2.1"
+	api "org.jetbrains.kotlin:kotlin-stdlib:2.4.21"
 	
 	// r8 必须脱糖否则只能安卓13使用
 	api project(':appAideBase')

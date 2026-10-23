@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.aide.ui.base"
-        minSdkVersion 24
+        minSdkVersion 29
         targetSdkVersion 28
         versionCode 2008210017
         versionName "3.2.210316"
@@ -34,15 +34,13 @@ dependencies {
 	//* shizuku.
 	api "dev.rikka.shizuku:provider:13+"
 	
-	api "androidx.browser:browser:1.6.0"
+	api "androidx.browser:browser:1.10.0"
 	
 	api "androidx.drawerlayout:drawerlayout:1.2.0"
 	
-	api "androidx.legacy:legacy-support-v4:1.0.0"
+	api "androidx.legacy:legacy-support-core-ui:1.0.0"
 	
-	api "androidx.multidex:multidex:2.0.1"
-	
-	api "androidx.annotation:annotation:1.7.1"
+	api "androidx.annotation:annotation:1.11.0"
 	
 	//*/
 	

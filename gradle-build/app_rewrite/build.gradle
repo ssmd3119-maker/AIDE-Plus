@@ -43,8 +43,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     lint {
@@ -67,9 +67,9 @@ dependencies {
     compileOnly fileTree(fixedApiJars.flatMap { it.outputDir }) { builtBy fixedApiJars }
     compileOnly 'io.github.itsaky:nb-javac-android:17.0.0.3'
 
-    api 'androidx.core:core:1.13.0'
+    api 'androidx.core:core:1.19.1'
     api 'androidx.preference:preference:1.2.1'
-    api 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0'
+    api 'org.jetbrains.kotlin:kotlin-stdlib:2.4.21'
     api 'net.margaritov.preference.colorpicker.ColorPickerPreference:ColorPickerPreference:1.0.0'
 }
 

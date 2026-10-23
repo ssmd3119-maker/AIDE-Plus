@@ -579,16 +579,7 @@ public class AaptService$c {
             if (Thread.interrupted()) {
 				throw new InterruptedException();
 			}
-			if (Build.VERSION.SDK_INT < 29 && !AaptService.VH()) {
-				File aaptFile = new File(this.FH);
-				boolean isSetExecutable = aaptFile.setReadable(true, false) 
-					&& aaptFile.setExecutable(true, false);
-				if (!isSetExecutable) {
-					throw new IOException("Could not make " + this.FH + " executable - exit code ");
-				}
-				AaptService.gn(true);
-				return;
-			}
+			// aapt runs from the native library directory on Android 10+, nothing to make executable
 			return;
 
         }
