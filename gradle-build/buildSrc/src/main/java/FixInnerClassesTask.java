@@ -49,6 +49,16 @@ public abstract class FixInnerClassesTask extends DefaultTask {
     @Input
     public abstract ListProperty<String> getRemovedMethods();
 
+    /**
+     * Classes (internal names) that the sources define. They and their nested
+     * classes are left out of the stubs, including the InnerClasses entries
+     * naming them: a source file
+     * such as Outer$c.java is a top-level class, and javac would otherwise
+     * compile it as an inner class of Outer with an extra outer parameter.
+     */
+    @Input
+    public abstract ListProperty<String> getExcludedClasses();
+
     @OutputDirectory
     public abstract DirectoryProperty getOutputDir();
 
@@ -68,12 +78,13 @@ public abstract class FixInnerClassesTask extends DefaultTask {
     public void run() throws IOException {
         File outDir = getOutputDir().get().getAsFile();
         Set<String> removedMethods = new HashSet<>(getRemovedMethods().getOrElse(java.util.Collections.emptyList()));
+        Set<String> excludedClasses = new HashSet<>(getExcludedClasses().getOrElse(java.util.Collections.emptyList()));
         for (File jar : getJars().getFiles()) {
-            fixJar(jar, new File(outDir, jar.getName()), removedMethods);
+            fixJar(jar, new File(outDir, jar.getName()), removedMethods, excludedClasses);
         }
     }
 
-    private static void fixJar(File in, File out, Set<String> removedMethods) throws IOException {
+    private static void fixJar(File in, File out, Set<String> removedMethods, Set<String> excludedClasses) throws IOException {
         Map<String, Inner> inners = new HashMap<>();
         Map<String, ClassReader> classes = new HashMap<>();
         try (ZipFile zip = new ZipFile(in)) {
@@ -81,6 +92,7 @@ public abstract class FixInnerClassesTask extends DefaultTask {
                 ZipEntry entry = e.nextElement();
                 if (!entry.getName().endsWith(".class")) continue;
                 ClassReader reader = new ClassReader(read(zip, entry));
+                if (isExcluded(reader.getClassName(), excludedClasses)) continue;
                 classes.put(reader.getClassName(), reader);
             }
             for (ClassReader reader : classes.values()) {
@@ -113,16 +125,26 @@ public abstract class FixInnerClassesTask extends DefaultTask {
                 for (Enumeration<? extends ZipEntry> e = zip.entries(); e.hasMoreElements(); ) {
                     ZipEntry entry = e.nextElement();
                     if (entry.isDirectory()) continue;
+                    String name = entry.getName();
+                    if (name.endsWith(".class")
+                            && isExcluded(name.substring(0, name.length() - ".class".length()), excludedClasses)) continue;
                     byte[] bytes = read(zip, entry);
-                    if (entry.getName().endsWith(".class")) {
-                        bytes = fixClass(bytes, inners, removedMethods);
+                    if (name.endsWith(".class")) {
+                        bytes = fixClass(bytes, inners, removedMethods, excludedClasses);
                     }
-                    zos.putNextEntry(new ZipEntry(entry.getName()));
+                    zos.putNextEntry(new ZipEntry(name));
                     zos.write(bytes);
                     zos.closeEntry();
                 }
             }
         }
+    }
+
+    private static boolean isExcluded(String name, Set<String> excludedClasses) {
+        for (int i = name.length(); i > 0; i = name.lastIndexOf('$', i - 1)) {
+            if (excludedClasses.contains(name.substring(0, i))) return true;
+        }
+        return false;
     }
 
     private static int withClassVisibility(int access, int classAccess) {
@@ -146,7 +168,7 @@ public abstract class FixInnerClassesTask extends DefaultTask {
         return found[0];
     }
 
-    private static byte[] fixClass(byte[] bytes, Map<String, Inner> inners, Set<String> removedMethods) {
+    private static byte[] fixClass(byte[] bytes, Map<String, Inner> inners, Set<String> removedMethods, Set<String> excludedClasses) {
         ClassReader reader = new ClassReader(bytes);
         String self = reader.getClassName();
         ClassWriter writer = new ClassWriter(0);
@@ -154,7 +176,7 @@ public abstract class FixInnerClassesTask extends DefaultTask {
         reader.accept(new ClassVisitor(Opcodes.ASM9, writer) {
             @Override
             public void visitInnerClass(String name, String outerName, String innerName, int access) {
-                if (!written.add(name)) return;
+                if (isExcluded(name, excludedClasses) || !written.add(name)) return;
                 Inner inner = inners.get(name);
                 if (inner != null) {
                     super.visitInnerClass(name, inner.outer, inner.simpleName, inner.access);

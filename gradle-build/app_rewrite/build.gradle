@@ -9,6 +9,14 @@ def fixedApiJars = tasks.register('fixApiJars', FixInnerClassesTask) {
     jars.from(fileTree(dir: new File(moduleDir, 'provider'), include: ['*.jar']))
     // boolean MainActivity.checkSelfPermission(String) clashes with Context's int version
     removedMethods.add('com/aide/ui/MainActivity.checkSelfPermission(Ljava/lang/String;)Z')
+    // classes replaced by the sources, e.g. com/aide/ui/build/android/AaptService$c
+    def javaDir = new File(moduleDir, 'src/main/java')
+    excludedClasses.set(provider {
+        fileTree(javaDir).matching { include '**/*.java' }.files.collect {
+            def path = javaDir.toPath().relativize(it.toPath()).toString().replace(File.separatorChar, '/' as char)
+            path.substring(0, path.length() - '.java'.length())
+        }.sort()
+    })
     outputDir = layout.buildDirectory.dir('fixed-api-jars')
 }
 
