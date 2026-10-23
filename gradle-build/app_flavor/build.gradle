@@ -1,0 +1,246 @@
+import com.android.build.api.artifact.SingleArtifact
+import com.android.build.api.variant.BuiltArtifactsLoader
+import java.util.zip.CRC32
+import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
+import java.util.zip.ZipOutputStream
+import javax.inject.Inject
+
+plugins {
+    id 'com.android.application'
+}
+
+def srcRoot = rootProject.srcRoot
+def moduleDir = new File(srcRoot, 'app_flavor')
+
+// The prebuilt AIDE dex has resource ids inlined, so they must keep the values
+// pinned in appAideBase/res/values/public.xml
+def stableIds = layout.buildDirectory.file('stable-ids.txt').get().asFile
+stableIds.parentFile.mkdirs()
+stableIds.withWriter('UTF-8') { w ->
+    def publicXml = new File(srcRoot, 'appAideBase/src/main/res/values/public.xml')
+    (publicXml.getText('UTF-8') =~ /<public type="(\w+)" name="([^"]+)" id="(0x[0-9a-fA-F]+)"/).each { m, type, name, id ->
+        w.println("io.github.zeroaicy.aide:${type}/${name} = ${id}")
+    }
+}
+
+android {
+    namespace 'io.github.zeroaicy.aide'
+    compileSdk rootProject.compileSdk
+
+    defaultConfig {
+        applicationId 'io.github.zeroaicy.aide'
+        minSdk rootProject.minSdk
+        targetSdk rootProject.targetSdk
+        versionCode 2008210017
+        versionName '2.2.0.3-[3.2.210316]'
+    }
+
+    signingConfigs {
+        release {
+            storeFile new File(moduleDir, 'release.jks')
+            storePassword '123789456'
+            keyAlias 'AIDE+'
+            keyPassword '123789456'
+        }
+        debug {
+            storeFile new File(moduleDir, 'debug.jks')
+            storePassword '123789456'
+            keyAlias 'androiddebug'
+            keyPassword '123789456'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+        debug {
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile new File(moduleDir, 'src/main/AndroidManifest.xml')
+            java.srcDirs = [new File(moduleDir, 'src/main/java')]
+            res.srcDirs = [new File(moduleDir, 'src/main/res')]
+            assets.srcDirs = [layout.buildDirectory.dir('runtime-resources/assets').get().asFile]
+            jniLibs.srcDirs = [layout.buildDirectory.dir('runtime-resources/lib').get().asFile]
+            resources.srcDirs = [layout.buildDirectory.dir('runtime-resources/java').get().asFile]
+        }
+    }
+
+    androidResources {
+        additionalParameters += ['--stable-ids', stableIds.absolutePath]
+        // assets such as *.zip and *.jet are read by the app as-is
+        ignoreAssetsPattern '!.svn:!.git:.*:!CVS:!thumbs.db:!picasa.ini:!*.scc:*~'
+    }
+
+    packaging {
+        jniLibs {
+            useLegacyPackaging true
+            keepDebugSymbols += '**/*.so'
+        }
+        resources {
+            excludes += ['META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.MF']
+            pickFirsts += ['META-INF/**']
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
+    }
+}
+
+dependencies {
+    implementation project(':app_rewrite')
+}
+
+// Jars that hold assets/, lib/ and java resources for the apk (AIDE "runtime" jars)
+def resourceJars = [
+        new File(srcRoot, 'appAideBase/runtime/resource.jar'),
+        new File(srcRoot, 'app_rewrite/runtime/aide-rewrite-resource.jar'),
+]
+
+def extractRuntimeResources = tasks.register('extractRuntimeResources', Sync) {
+    into layout.buildDirectory.dir('runtime-resources')
+    duplicatesStrategy DuplicatesStrategy.INCLUDE
+    // later jars override earlier ones
+    resourceJars.each { jar ->
+        from(zipTree(jar)) {
+            exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/MANIFEST.MF'
+            eachFile { f ->
+                def p = f.relativePath.pathString
+                if (!p.startsWith('assets/') && !p.startsWith('lib/')) {
+                    f.relativePath = new RelativePath(true, (['java'] + (f.relativePath.segments as List)) as String[])
+                }
+            }
+            includeEmptyDirs = false
+        }
+    }
+}
+tasks.named('preBuild') { dependsOn extractRuntimeResources }
+
+// Jars that hold prebuilt classes.dex. AIDE+ replaces classes of the base dex by
+// shipping classes with the same name, so the order matters: the apk's own dex
+// comes first, then each jar in this order.
+def prebuiltDexJars = [
+        new File(srcRoot, 'app_rewrite/libs/修改增量[临时]-2.2.jar'),
+        new File(srcRoot, 'app_rewrite/libs/底包修改增量包2.2.jar'),
+        new File(srcRoot, 'appAideBase/runtime/AIDE+底包-2.2.jar'),
+        new File(srcRoot, 'app_rewrite/libs/ClassReaderLibrary-1.8.0-beta.jar'),
+        new File(srcRoot, 'app_rewrite/runtime/r8-8.2.42.jar'),
+]
+
+abstract class AppendDexTask extends DefaultTask {
+    @InputFiles abstract DirectoryProperty getApkDir()
+    @Internal abstract Property<BuiltArtifactsLoader> getLoader()
+    @InputFiles abstract ConfigurableFileCollection getDexJars()
+    @Input abstract Property<String> getBuildToolsDir()
+    @InputFile abstract RegularFileProperty getKeystore()
+    @Input abstract Property<String> getStorePassword()
+    @Input abstract Property<String> getKeyAlias()
+    @Input abstract Property<String> getKeyPassword()
+    @Input abstract Property<Integer> getMinSdk()
+    @OutputFile abstract RegularFileProperty getOutputApk()
+
+    @Inject abstract ExecOperations getExecOps()
+
+    static int dexIndex(String name) {
+        def m = name =~ /^classes(\d*)\.dex$/
+        return m.matches() ? (m.group(1) ? m.group(1).toInteger() : 1) : -1
+    }
+
+    @TaskAction
+    void run() {
+        def inputApk = new File(loader.get().load(apkDir.get()).elements.first().outputFile)
+        def out = outputApk.get().asFile
+        def tmpDir = new File(temporaryDir, 'work')
+        tmpDir.deleteDir()
+        tmpDir.mkdirs()
+        def unaligned = new File(tmpDir, 'unaligned.apk')
+        def aligned = new File(tmpDir, 'aligned.apk')
+
+        int nextIndex = 1
+        new ZipOutputStream(unaligned.newOutputStream()).withCloseable { zos ->
+            new ZipFile(inputApk).withCloseable { zip ->
+                zip.entries().each { ZipEntry e ->
+                    // the apk is signed again below
+                    if (e.name ==~ /META-INF\/[^\/]+\.(SF|RSA|EC|DSA|MF)/) return
+                    def idx = dexIndex(e.name)
+                    if (idx >= nextIndex) nextIndex = idx + 1
+                    def ne = new ZipEntry(e.name)
+                    ne.method = e.method
+                    if (e.method == ZipEntry.STORED) {
+                        ne.size = e.size
+                        ne.compressedSize = e.size
+                        ne.crc = e.crc
+                    }
+                    zos.putNextEntry(ne)
+                    zip.getInputStream(e).withCloseable { zos << it }
+                    zos.closeEntry()
+                }
+            }
+            dexJars.files.each { jar ->
+                new ZipFile(jar).withCloseable { zip ->
+                    def dexEntries = zip.entries().findAll { dexIndex(it.name) > 0 }
+                            .sort { dexIndex(it.name) }
+                    if (dexEntries.isEmpty()) throw new GradleException("No dex in ${jar}")
+                    dexEntries.each { ZipEntry e ->
+                        def name = nextIndex == 1 ? 'classes.dex' : "classes${nextIndex}.dex"
+                        nextIndex++
+                        logger.lifecycle("${name} <- ${jar.name}!${e.name}")
+                        zos.putNextEntry(new ZipEntry(name))
+                        zip.getInputStream(e).withCloseable { zos << it }
+                        zos.closeEntry()
+                    }
+                }
+            }
+        }
+
+        def bt = buildToolsDir.get()
+        execOps.exec { commandLine "${bt}/zipalign", '-f', '-p', '4', unaligned.absolutePath, aligned.absolutePath }
+        out.parentFile.mkdirs()
+        execOps.exec {
+            commandLine "${bt}/apksigner", 'sign',
+                    '--ks', keystore.get().asFile.absolutePath,
+                    '--ks-pass', "pass:${storePassword.get()}",
+                    '--ks-key-alias', keyAlias.get(),
+                    '--key-pass', "pass:${keyPassword.get()}",
+                    '--min-sdk-version', minSdk.get().toString(),
+                    '--out', out.absolutePath,
+                    aligned.absolutePath
+        }
+        execOps.exec { commandLine "${bt}/apksigner", 'verify', out.absolutePath }
+        logger.lifecycle("AIDE-Plus apk: ${out}")
+    }
+}
+
+androidComponents {
+    onVariants(selector().all()) { variant ->
+        def cap = variant.name.capitalize()
+        def signing = android.signingConfigs.getByName(variant.buildType)
+        def task = tasks.register("assemble${cap}AidePlus", AppendDexTask) {
+            group 'build'
+            description "Builds the ${variant.name} AIDE-Plus apk including the prebuilt AIDE dex"
+            apkDir.set(variant.artifacts.get(SingleArtifact.APK.INSTANCE))
+            loader.set(variant.artifacts.builtArtifactsLoader)
+            dexJars.from(prebuiltDexJars)
+            buildToolsDir.set(android.sdkDirectory.path + '/build-tools/' + android.buildToolsVersion)
+            keystore.set(signing.storeFile)
+            storePassword.set(signing.storePassword)
+            keyAlias.set(signing.keyAlias)
+            keyPassword.set(signing.keyPassword)
+            minSdk.set(rootProject.minSdk)
+            outputApk.set(layout.buildDirectory.file("outputs/aide-plus/AIDE-Plus-${variant.name}.apk"))
+        }
+    }
+}

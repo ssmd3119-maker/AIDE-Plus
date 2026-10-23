@@ -1,0 +1,12 @@
+plugins {
+    id 'com.android.application' version '8.7.3' apply false
+    id 'com.android.library' version '8.7.3' apply false
+}
+
+ext {
+    // Root of the AIDE project sources
+    srcRoot = file('..')
+    compileSdk = 34
+    minSdk = 24
+    targetSdk = 28
+}

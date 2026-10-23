@@ -1,0 +1,48 @@
+plugins {
+    id 'com.android.library'
+}
+
+def moduleDir = new File(rootProject.srcRoot, 'appAideBase')
+
+def fixedApiJars = tasks.register('fixApiJars', FixInnerClassesTask) {
+    jars.from(new File(moduleDir, 'provider/AIDE+底包-2.2-api.jar'))
+    // boolean MainActivity.checkSelfPermission(String) clashes with Context's int version
+    removedMethods.add('com/aide/ui/MainActivity.checkSelfPermission(Ljava/lang/String;)Z')
+    outputDir = layout.buildDirectory.dir('fixed-api-jars')
+}
+
+android {
+    namespace 'com.aide.ui.base'
+    compileSdk rootProject.compileSdk
+
+    defaultConfig {
+        minSdk rootProject.minSdk
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile new File(moduleDir, 'src/main/AndroidManifest.xml')
+            res.srcDirs = [new File(moduleDir, 'src/main/res')]
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    api files(new File(moduleDir, 'libs/support-v4-res-compatible.jar'))
+
+    api 'dev.rikka.shizuku:provider:13.1.5'
+    api 'dev.rikka.shizuku:api:13.1.5'
+    api 'androidx.browser:browser:1.6.0'
+    api 'androidx.drawerlayout:drawerlayout:1.2.0'
+    api 'androidx.legacy:legacy-support-v4:1.0.0'
+    api 'androidx.multidex:multidex:2.0.1'
+    api 'androidx.annotation:annotation:1.7.1'
+
+    // Prebuilt AIDE classes (stub api); the dex itself is added to the apk by :app_flavor
+    compileOnly fileTree(fixedApiJars.flatMap { it.outputDir }) { builtBy fixedApiJars }
+}
