@@ -37,11 +37,11 @@ dependencies {
 
     api 'dev.rikka.shizuku:provider:13.1.5'
     api 'dev.rikka.shizuku:api:13.1.5'
-    api 'androidx.browser:browser:1.10.0'
+    api 'androidx.browser:browser:1.8.0'
     api 'androidx.drawerlayout:drawerlayout:1.2.0'
     // ActionBarDrawerToggle; the rest of legacy-support-v4 is unused
     api 'androidx.legacy:legacy-support-core-ui:1.0.0'
-    api 'androidx.annotation:annotation:1.11.0'
+    api 'androidx.annotation:annotation:1.9.1'
 
     // Prebuilt AIDE classes (stub api); the dex itself is added to the apk by :app_flavor
     compileOnly fileTree(fixedApiJars.flatMap { it.outputDir }) { builtBy fixedApiJars }

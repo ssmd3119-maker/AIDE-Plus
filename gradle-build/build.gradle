@@ -1,12 +1,14 @@
 plugins {
-    id 'com.android.application' version '9.4.1' apply false
-    id 'com.android.library' version '9.4.1' apply false
+    // Android Gradle Plugin 8.3.0 comes from buildSrc/build.gradle; that version
+    // also opens in on-device IDEs such as AndroidIDE
+    id 'com.android.application' apply false
+    id 'com.android.library' apply false
 }
 
 ext {
     // Root of the AIDE project sources
     srcRoot = file('..')
-    compileSdk = 37
+    compileSdk = 34
     // Android 10
     minSdk = 29
     // Stays 28: AIDE runs aapt, aidl and other tools it extracts into its

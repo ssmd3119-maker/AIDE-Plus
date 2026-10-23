@@ -1,10 +1,4 @@
 import com.android.build.api.artifact.SingleArtifact
-import com.android.build.api.variant.BuiltArtifactsLoader
-import java.util.zip.CRC32
-import java.util.zip.ZipEntry
-import java.util.zip.ZipFile
-import java.util.zip.ZipOutputStream
-import javax.inject.Inject
 
 plugins {
     id 'com.android.application'
@@ -27,7 +21,7 @@ stableIds.withWriter('UTF-8') { w ->
 android {
     namespace 'io.github.zeroaicy.aide'
     compileSdk rootProject.compileSdk
-    buildToolsVersion '37.0.0'
+    buildToolsVersion '34.0.0'
 
     defaultConfig {
         applicationId 'io.github.zeroaicy.aide'
@@ -141,90 +135,6 @@ def prebuiltDexJars = [
         new File(srcRoot, 'app_rewrite/runtime/r8-8.2.42.jar'),
 ]
 
-abstract class AppendDexTask extends DefaultTask {
-    @InputFiles abstract DirectoryProperty getApkDir()
-    @Internal abstract Property<BuiltArtifactsLoader> getLoader()
-    @InputFiles abstract ConfigurableFileCollection getDexJars()
-    @Input abstract Property<String> getBuildToolsDir()
-    @InputFile abstract RegularFileProperty getKeystore()
-    @Input abstract Property<String> getStorePassword()
-    @Input abstract Property<String> getKeyAlias()
-    @Input abstract Property<String> getKeyPassword()
-    @Input abstract Property<Integer> getMinSdk()
-    @OutputFile abstract RegularFileProperty getOutputApk()
-
-    @Inject abstract ExecOperations getExecOps()
-
-    static int dexIndex(String name) {
-        def m = name =~ /^classes(\d*)\.dex$/
-        return m.matches() ? (m.group(1) ? m.group(1).toInteger() : 1) : -1
-    }
-
-    @TaskAction
-    void run() {
-        def inputApk = new File(loader.get().load(apkDir.get()).elements.first().outputFile)
-        def out = outputApk.get().asFile
-        def tmpDir = new File(temporaryDir, 'work')
-        tmpDir.deleteDir()
-        tmpDir.mkdirs()
-        def unaligned = new File(tmpDir, 'unaligned.apk')
-        def aligned = new File(tmpDir, 'aligned.apk')
-
-        int nextIndex = 1
-        new ZipOutputStream(unaligned.newOutputStream()).withCloseable { zos ->
-            new ZipFile(inputApk).withCloseable { zip ->
-                zip.entries().each { ZipEntry e ->
-                    // the apk is signed again below
-                    if (e.name ==~ /META-INF\/[^\/]+\.(SF|RSA|EC|DSA|MF)/) return
-                    def idx = dexIndex(e.name)
-                    if (idx >= nextIndex) nextIndex = idx + 1
-                    def ne = new ZipEntry(e.name)
-                    ne.method = e.method
-                    if (e.method == ZipEntry.STORED) {
-                        ne.size = e.size
-                        ne.compressedSize = e.size
-                        ne.crc = e.crc
-                    }
-                    zos.putNextEntry(ne)
-                    zip.getInputStream(e).withCloseable { zos << it }
-                    zos.closeEntry()
-                }
-            }
-            dexJars.files.each { jar ->
-                new ZipFile(jar).withCloseable { zip ->
-                    def dexEntries = zip.entries().findAll { dexIndex(it.name) > 0 }
-                            .sort { dexIndex(it.name) }
-                    if (dexEntries.isEmpty()) throw new GradleException("No dex in ${jar}")
-                    dexEntries.each { ZipEntry e ->
-                        def name = nextIndex == 1 ? 'classes.dex' : "classes${nextIndex}.dex"
-                        nextIndex++
-                        logger.lifecycle("${name} <- ${jar.name}!${e.name}")
-                        zos.putNextEntry(new ZipEntry(name))
-                        zip.getInputStream(e).withCloseable { zos << it }
-                        zos.closeEntry()
-                    }
-                }
-            }
-        }
-
-        def bt = buildToolsDir.get()
-        execOps.exec { commandLine "${bt}/zipalign", '-f', '-p', '4', unaligned.absolutePath, aligned.absolutePath }
-        out.parentFile.mkdirs()
-        execOps.exec {
-            commandLine "${bt}/apksigner", 'sign',
-                    '--ks', keystore.get().asFile.absolutePath,
-                    '--ks-pass', "pass:${storePassword.get()}",
-                    '--ks-key-alias', keyAlias.get(),
-                    '--key-pass', "pass:${keyPassword.get()}",
-                    '--min-sdk-version', minSdk.get().toString(),
-                    '--out', out.absolutePath,
-                    aligned.absolutePath
-        }
-        execOps.exec { commandLine "${bt}/apksigner", 'verify', out.absolutePath }
-        logger.lifecycle("AIDE-Plus apk: ${out}")
-    }
-}
-
 androidComponents {
     onVariants(selector().all()) { variant ->
         def cap = variant.name.capitalize()
@@ -235,7 +145,6 @@ androidComponents {
             apkDir.set(variant.artifacts.get(SingleArtifact.APK.INSTANCE))
             loader.set(variant.artifacts.builtArtifactsLoader)
             dexJars.from(prebuiltDexJars)
-            buildToolsDir.set(androidComponents.sdkComponents.sdkDirectory.map { it.dir('build-tools/' + android.buildToolsVersion).asFile.path })
             keystore.set(signing.storeFile)
             storePassword.set(signing.storePassword)
             keyAlias.set(signing.keyAlias)

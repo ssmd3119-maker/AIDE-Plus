@@ -3,9 +3,14 @@ plugins {
 }
 
 repositories {
+    google()
     mavenCentral()
 }
 
 dependencies {
     implementation 'org.ow2.asm:asm:9.7.1'
+    // in-process apk alignment and signing, so no build-tools binaries are run
+    implementation 'com.android.tools.build:apksig:8.3.0'
+    // Android Gradle Plugin 8.3.0; on this classpath so AppendDexTask can use its API
+    implementation 'com.android.tools.build:gradle:8.3.0'
 }

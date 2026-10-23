@@ -29,9 +29,9 @@ dependencies {
 	
 	compileOnly fileTree(dir: 'provider', include: ['.jar'])
 	
-	api "androidx.core:core:1.19.1"
+	api "androidx.core:core:1.13.1"
 	api "androidx.preference:preference:1.2.1"
-	api "org.jetbrains.kotlin:kotlin-stdlib:2.4.21"
+	api "org.jetbrains.kotlin:kotlin-stdlib:1.9.24"
 	
 	// r8 必须脱糖否则只能安卓13使用
 	api project(':appAideBase')
