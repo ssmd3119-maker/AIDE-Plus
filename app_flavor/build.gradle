@@ -1,50 +1,151 @@
-apply plugin: 'com.android.library'
+import com.android.build.api.artifact.SingleArtifact
+
+plugins {
+    id 'com.android.application'
+}
+
+
+// The prebuilt AIDE dex has resource ids inlined, so they must keep the values
+// pinned in appAideBase/res/values/public.xml
+def stableIds = layout.buildDirectory.file('stable-ids.txt').get().asFile
+stableIds.parentFile.mkdirs()
+stableIds.withWriter('UTF-8') { w ->
+    def publicXml = rootProject.file('appAideBase/src/main/res/values/public.xml')
+    (publicXml.getText('UTF-8') =~ /<public type="(\w+)" name="([^"]+)" id="(0x[0-9a-fA-F]+)"/).each { m, type, name, id ->
+        w.println("io.github.zeroaicy.aide:${type}/${name} = ${id}")
+    }
+}
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.0"
-	
+    namespace 'io.github.zeroaicy.aide'
+    compileSdk rootProject.compileSdk
+    buildToolsVersion '34.0.0'
+
     defaultConfig {
-		applicationId "io.github.zeroaicy.aide"
-        minSdkVersion 29
-        targetSdkVersion 28
+        applicationId 'io.github.zeroaicy.aide'
+        minSdk rootProject.minSdk
+        targetSdk rootProject.targetSdk
         versionCode 2008210017
-        versionName "2.2.0.3-[3.2.210316]"
+        versionName '2.2.0.3-[3.2.210316]'
     }
-	signingConfigs{
-		release{
-			keyAlias "AIDE+"
-			keyPassword "123789456"
-			storePassword "123789456"
-			storeFile file("release.jks")
-		}
-		debug{
-			keyAlias "androiddebug"
-			keyPassword "123789456"
-			storePassword "123789456"
-			storeFile file("debug.jks")
-		}
-		
-	}
+
+    signingConfigs {
+        release {
+            storeFile file('release.jks')
+            storePassword '123789456'
+            keyAlias 'AIDE+'
+            keyPassword '123789456'
+        }
+        debug {
+            storeFile file('debug.jks')
+            storePassword '123789456'
+            keyAlias 'androiddebug'
+            keyPassword '123789456'
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
-			shrinkResources false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
+        debug {
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    sourceSets {
+        main {
+            assets.srcDirs = [layout.buildDirectory.dir('runtime-resources/assets').get().asFile]
+            jniLibs.srcDirs = [layout.buildDirectory.dir('runtime-resources/lib').get().asFile]
+            resources.srcDirs = [layout.buildDirectory.dir('runtime-resources/java').get().asFile]
+        }
+    }
+
+    androidResources {
+        additionalParameters += ['--stable-ids', stableIds.absolutePath]
+        // assets such as *.zip and *.jet are read by the app as-is
+        ignoreAssetsPattern '!.svn:!.git:.*:!CVS:!thumbs.db:!picasa.ini:!*.scc:*~'
+    }
+
+    packaging {
+        jniLibs {
+            useLegacyPackaging true
+            keepDebugSymbols += '**/*.so'
+        }
+        resources {
+            excludes += ['META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.MF']
+            pickFirsts += ['META-INF/**']
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-	/*
-	//引入卡顿监控实现依赖库
-	api 'io.github.knight-zxw:blockcanary:+'
-	//引入卡顿消息通知及相关展示UI
-	api 'io.github.knight-zxw:blockcanary-ui:+'
-	api "androidx.lifecycle:lifecycle-livedata:2.3.1"
-	//*/
-	
-	api project(':app_rewrite')
-	
+    implementation project(':app_rewrite')
+}
+
+// Jars that hold assets/, lib/ and java resources for the apk (AIDE "runtime" jars)
+def resourceJars = [
+        rootProject.file('appAideBase/runtime/resource.jar'),
+        rootProject.file('app_rewrite/runtime/aide-rewrite-resource.jar'),
+]
+
+def extractRuntimeResources = tasks.register('extractRuntimeResources', Sync) {
+    into layout.buildDirectory.dir('runtime-resources')
+    duplicatesStrategy DuplicatesStrategy.INCLUDE
+    // later jars override earlier ones
+    resourceJars.each { jar ->
+        from(zipTree(jar)) {
+            exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/MANIFEST.MF'
+            eachFile { f ->
+                def p = f.relativePath.pathString
+                if (!p.startsWith('assets/') && !p.startsWith('lib/')) {
+                    f.relativePath = new RelativePath(true, (['java'] + (f.relativePath.segments as List)) as String[])
+                }
+            }
+            includeEmptyDirs = false
+        }
+    }
+}
+tasks.named('preBuild') { dependsOn extractRuntimeResources }
+
+// Jars that hold prebuilt classes.dex. AIDE+ replaces classes of the base dex by
+// shipping classes with the same name, so the order matters: the apk's own dex
+// comes first, then each jar in this order.
+def prebuiltDexJars = [
+        rootProject.file('app_rewrite/libs/修改增量[临时]-2.2.jar'),
+        rootProject.file('app_rewrite/libs/底包修改增量包2.2.jar'),
+        rootProject.file('appAideBase/runtime/AIDE+底包-2.2.jar'),
+        rootProject.file('app_rewrite/libs/ClassReaderLibrary-1.8.0-beta.jar'),
+        rootProject.file('app_rewrite/runtime/r8-8.2.42.jar'),
+]
+
+androidComponents {
+    onVariants(selector().all()) { variant ->
+        def cap = variant.name.capitalize()
+        def signing = android.signingConfigs.getByName(variant.buildType)
+        def task = tasks.register("assemble${cap}AidePlus", AppendDexTask) {
+            group 'build'
+            description "Builds the ${variant.name} AIDE-Plus apk including the prebuilt AIDE dex"
+            apkDir.set(variant.artifacts.get(SingleArtifact.APK.INSTANCE))
+            loader.set(variant.artifacts.builtArtifactsLoader)
+            dexJars.from(prebuiltDexJars)
+            keystore.set(signing.storeFile)
+            storePassword.set(signing.storePassword)
+            keyAlias.set(signing.keyAlias)
+            keyPassword.set(signing.keyPassword)
+            minSdk.set(rootProject.minSdk)
+            outputApk.set(layout.buildDirectory.file("outputs/aide-plus/AIDE-Plus-${variant.name}.apk"))
+        }
+    }
 }

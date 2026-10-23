@@ -1,24 +1,15 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:1.+'
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-    }
+plugins {
+    // Android Gradle Plugin 8.3.0 comes from buildSrc/build.gradle; that version
+    // also opens in on-device IDEs such as AndroidIDE
+    id 'com.android.application' apply false
+    id 'com.android.library' apply false
 }
 
-allprojects {
-    repositories {
-		maven { url 'https://maven.aliyun.com/repository/public' } 
-        maven { url 'http://repo1.maven.org/maven2/' } 
-        maven { url 'https://dl.bintray.com/ppartisan/maven/' }
-        maven { url "https://clojars.org/repo/" }
-        maven { url "https://jitpack.io" }
-		jcenter()        
-	}
+ext {
+    compileSdk = 34
+    // Android 10
+    minSdk = 29
+    // Stays 28: AIDE runs aapt, aidl and other tools it extracts into its
+    // data directory, which targetSdk 29+ forbids (W^X)
+    targetSdk = 28
 }

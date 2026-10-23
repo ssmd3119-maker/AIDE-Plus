@@ -1,43 +1,62 @@
-apply plugin: 'com.android.application'
+plugins {
+    id 'com.android.library'
+}
+
+def fixedApiJars = tasks.register('fixApiJars', FixInnerClassesTask) {
+    jars.from(rootProject.file('appAideBase/provider/AIDE+底包-2.2-api.jar'))
+    jars.from(fileTree(dir: 'provider', include: ['*.jar']))
+    // boolean MainActivity.checkSelfPermission(String) clashes with Context's int version
+    removedMethods.add('com/aide/ui/MainActivity.checkSelfPermission(Ljava/lang/String;)Z')
+    // classes replaced by the sources, e.g. com/aide/ui/build/android/AaptService$c
+    def javaDir = file('src/main/java')
+    excludedClasses.set(provider {
+        fileTree(javaDir).matching { include '**/*.java' }.files.collect {
+            def path = javaDir.toPath().relativize(it.toPath()).toString().replace(File.separatorChar, '/' as char)
+            path.substring(0, path.length() - '.java'.length())
+        }.sort()
+    })
+    outputDir = layout.buildDirectory.dir('fixed-api-jars')
+}
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.0"
-	
-	ndkVersion "24.0.8215888"
+    namespace 'com.aide.ui.rewrite'
+    compileSdk rootProject.compileSdk
+
     defaultConfig {
-        applicationId "com.aide.ui.rewrite"
-        minSdkVersion 29
-        targetSdkVersion 28
-        versionCode 2008210017
-        versionName "3.2.210316"
+        minSdk rootProject.minSdk
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    lint {
+        abortOnError false
     }
 }
 
-
-
 dependencies {
-	compile fileTree(dir: 'libs', include: ['*.jar'])
-	
-	runtimeOnly fileTree(dir: 'runtime', include: ['*.jar'])
-	
-	compileOnly fileTree(dir: 'provider', include: ['.jar'])
-	
-	api "androidx.core:core:1.13.1"
-	api "androidx.preference:preference:1.2.1"
-	api "org.jetbrains.kotlin:kotlin-stdlib:1.9.24"
-	
-	// r8 必须脱糖否则只能安卓13使用
-	api project(':appAideBase')
-	//api project(':kotlin')
-	// ecj依赖这个
-	compileOnly "io.github.itsaky:nb-javac-android:17.0.0.3"
-	
-	api 'net.margaritov.preference.colorpicker.ColorPickerPreference:ColorPickerPreference:1.0.0' 
+    api project(':appAideBase')
+
+    // Plain class jars
+    implementation files(
+            'libs/apksig-8.5.0-alpha07.jar',
+            'libs/bcprov-jdk15on-1.70.jar',
+            'libs/maven-model-3.9.1.jar',
+            'libs/plexus-utils-3.5.1.jar',
+            'libs/MTDataFilesProvider.jar')
+
+    // Compile-time only; the jars that hold dex are added to the apk by :app_flavor
+    compileOnly fileTree(fixedApiJars.flatMap { it.outputDir }) { builtBy fixedApiJars }
+    compileOnly 'io.github.itsaky:nb-javac-android:17.0.0.3'
+
+    api 'androidx.core:core:1.13.1'
+    api 'androidx.preference:preference:1.2.1'
+    api 'org.jetbrains.kotlin:kotlin-stdlib:1.9.24'
+    api 'net.margaritov.preference.colorpicker.ColorPickerPreference:ColorPickerPreference:1.0.0'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += ['-Xmaxerrs', '2000']
 }

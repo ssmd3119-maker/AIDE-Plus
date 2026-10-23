@@ -1,32 +1,38 @@
-# Desktop build
+# AIDE-Plus
 
-Builds the AIDE-Plus apk with the Android Gradle Plugin 8.3.0. The
-`build.gradle` files next to the sources are read by AIDE on the device and
-stay as they are; this build points at the same sources.
+AIDE-Plus is a modified build of AIDE, the Android IDE that runs on the
+phone. This repository is a standard Gradle project (Android Gradle Plugin
+8.3.0, Gradle 8.6):
+
+| Module | What it is |
+|---|---|
+| `app_flavor` | The app (`io.github.zeroaicy.aide`): manifest, signing keys |
+| `app_rewrite` | AIDE+ sources: classes that replace or extend AIDE's, new UI |
+| `appAideBase` | AIDE's resources and the prebuilt AIDE code (`runtime/`, `provider/`) |
+| `buildSrc` | Build tasks: compile stubs fix-up, dex append and signing |
+
+## Build
 
 ```sh
-cd gradle-build
 echo "sdk.dir=/path/to/android-sdk" > local.properties   # or set ANDROID_HOME
 LC_ALL=C.UTF-8 ./gradlew assembleReleaseAidePlus
 # -> app_flavor/build/outputs/aide-plus/AIDE-Plus-release.apk
 ```
 
-Needs JDK 17+, the SDK platform `android-34` and build-tools `34.0.0`
-(Gradle 8.6 comes with the wrapper). Several jars have Chinese file names,
-so on a desktop the JVM needs a UTF-8 locale (`LC_ALL=C.UTF-8`).
+Needs JDK 17+, the SDK platform `android-34` and build-tools `34.0.0`.
+Several jars have Chinese file names, so on a desktop the JVM needs a UTF-8
+locale (`LC_ALL=C.UTF-8`).
+
+Use `assembleReleaseAidePlus` or `assembleDebugAidePlus`. The plain
+`assembleRelease` apk lacks the AIDE base dex and does not run.
 
 ## In an Android IDE app (AndroidIDE and similar)
 
-Open the `gradle-build` folder as the project, not the repository root (the
-root is AIDE's project). Then run the `assembleReleaseAidePlus` task, or
-`assembleDebugAidePlus` for a debug build. The apk lands in
-`app_flavor/build/outputs/aide-plus/`. The plain `assembleRelease` apk
-lacks the AIDE base dex and does not run.
+Open the repository folder as the project and run the
+`assembleReleaseAidePlus` task. Aligning and signing happen inside Gradle
+(apksig), so no `zipalign` or `apksigner` binaries are needed.
 
-Aligning and signing happen inside Gradle (apksig), so no `zipalign` or
-`apksigner` binaries are needed.
-
-What it does beyond a plain Android build:
+## How the build works
 
 - **Prebuilt dex.** The AIDE base (`AIDE+底包-2.2.jar`) and the other jars that
   hold `classes.dex` are appended to the apk after the compiled sources, in the

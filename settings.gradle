@@ -1,1 +1,22 @@
-include ':app'
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        // ColorPickerPreference is only published here
+        maven { url 'https://maven.aliyun.com/repository/public' }
+    }
+}
+
+rootProject.name = 'AIDE-Plus'
+
+// app_flavor is the app; app_rewrite and appAideBase are libraries
+include ':appAideBase', ':app_rewrite', ':app_flavor'

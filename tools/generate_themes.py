@@ -4,7 +4,7 @@
 import xml.etree.ElementTree as ET
 from xml.sax.saxutils import escape
 import os
-R=os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..') + '/'
+R=os.path.join(os.path.dirname(os.path.abspath(__file__)), '..') + '/'
 def load(p):
     return {st.get('name'):(st.get('parent'),[(i.get('name'),(i.text or '').strip()) for i in st.iter('item')])
             for st in ET.parse(R+p).getroot().iter('style')}
