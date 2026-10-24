@@ -9,6 +9,7 @@ phone. This repository is a standard Gradle project (Android Gradle Plugin
 | `app_flavor` | The app (`io.github.zeroaicy.aide`): manifest, signing keys |
 | `app_rewrite` | AIDE+ sources: classes that replace or extend AIDE's, new UI |
 | `appAideBase` | AIDE's resources and the prebuilt AIDE code (`runtime/`, `provider/`) |
+| `stubs` | Compile-time stubs: hidden framework APIs and the ClassReader API (not packaged) |
 | `buildSrc` | Build tasks: compile stubs fix-up, dex append and signing |
 
 ## Build

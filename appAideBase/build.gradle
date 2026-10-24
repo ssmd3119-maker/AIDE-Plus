@@ -24,8 +24,6 @@ android {
 }
 
 dependencies {
-    api files('libs/support-v4-res-compatible.jar')
-
     api 'dev.rikka.shizuku:provider:13.1.5'
     api 'dev.rikka.shizuku:api:13.1.5'
     api 'androidx.browser:browser:1.8.0'

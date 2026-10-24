@@ -1,0 +1,20 @@
+plugins {
+    id 'com.android.library'
+}
+
+// Compile-time stubs only: hidden Android framework APIs and the ClassReader
+// library API. app_rewrite depends on this module compileOnly, so none of it
+// is packaged; the real classes come from the device or from the dex jars.
+android {
+    namespace 'io.github.zeroaicy.aide.stubs'
+    compileSdk rootProject.compileSdk
+
+    defaultConfig {
+        minSdk rootProject.minSdk
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}

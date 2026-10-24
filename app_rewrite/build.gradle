@@ -4,7 +4,7 @@ plugins {
 
 def fixedApiJars = tasks.register('fixApiJars', FixInnerClassesTask) {
     jars.from(rootProject.file('appAideBase/provider/AIDE+底包-2.2-api.jar'))
-    jars.from(fileTree(dir: 'provider', include: ['*.jar']))
+    jars.from(file('provider/r8-8.2.42-api.jar'), file('provider/ecj-4.9.jar'))
     // boolean MainActivity.checkSelfPermission(String) clashes with Context's int version
     removedMethods.add('com/aide/ui/MainActivity.checkSelfPermission(Ljava/lang/String;)Z')
     // classes replaced by the sources, e.g. com/aide/ui/build/android/AaptService$c
@@ -44,11 +44,12 @@ dependencies {
             'libs/apksig-8.5.0-alpha07.jar',
             'libs/bcprov-jdk15on-1.70.jar',
             'libs/maven-model-3.9.1.jar',
-            'libs/plexus-utils-3.5.1.jar',
-            'libs/MTDataFilesProvider.jar')
+            'libs/plexus-utils-3.5.1.jar')
 
     // Compile-time only; the jars that hold dex are added to the apk by :app_flavor
     compileOnly fileTree(fixedApiJars.flatMap { it.outputDir }) { builtBy fixedApiJars }
+    // hidden framework APIs and the ClassReader library API
+    compileOnly project(':stubs')
     compileOnly 'io.github.itsaky:nb-javac-android:17.0.0.3'
 
     api 'androidx.core:core:1.13.1'

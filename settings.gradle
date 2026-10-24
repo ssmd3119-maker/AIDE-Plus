@@ -18,5 +18,6 @@ dependencyResolutionManagement {
 
 rootProject.name = 'AIDE-Plus'
 
-// app_flavor is the app; app_rewrite and appAideBase are libraries
-include ':appAideBase', ':app_rewrite', ':app_flavor'
+// app_flavor is the app; app_rewrite and appAideBase are libraries;
+// stubs holds compile-time stubs only
+include ':appAideBase', ':app_rewrite', ':app_flavor', ':stubs'
