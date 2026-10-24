@@ -1,0 +1,7 @@
+package org.codehaus.groovy.vmplugin.v6;
+
+import org.codehaus.groovy.vmplugin.v5.Java5;
+
+/* loaded from: classes.dex */
+public class Java6 extends Java5 {
+}

@@ -11,6 +11,7 @@ phone. This repository is a standard Gradle project (Android Gradle Plugin
 | `appAideBase` | AIDE's resources and the prebuilt AIDE code (`runtime/`, `provider/`) |
 | `stubs` | Compile-time stubs: hidden framework APIs and the ClassReader API (not packaged) |
 | `buildSrc` | Build tasks: compile stubs fix-up, dex append and signing |
+| `decompiled` | Read-only decompiled source of the prebuilt AIDE code (not built) |
 
 ## Build
 

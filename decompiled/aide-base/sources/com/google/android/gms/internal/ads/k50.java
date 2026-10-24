@@ -1,0 +1,82 @@
+package com.google.android.gms.internal.ads;
+
+/* loaded from: classes.dex */
+public enum k50 {
+    DOUBLE(0, m50.SCALAR, a60.DOUBLE),
+    FLOAT(1, m50.SCALAR, a60.FLOAT),
+    INT64(2, m50.SCALAR, a60.LONG),
+    UINT64(3, m50.SCALAR, a60.LONG),
+    INT32(4, m50.SCALAR, a60.INT),
+    FIXED64(5, m50.SCALAR, a60.LONG),
+    FIXED32(6, m50.SCALAR, a60.INT),
+    BOOL(7, m50.SCALAR, a60.BOOLEAN),
+    STRING(8, m50.SCALAR, a60.STRING),
+    MESSAGE(9, m50.SCALAR, a60.MESSAGE),
+    BYTES(10, m50.SCALAR, a60.BYTE_STRING),
+    UINT32(11, m50.SCALAR, a60.INT),
+    ENUM(12, m50.SCALAR, a60.ENUM),
+    SFIXED32(13, m50.SCALAR, a60.INT),
+    SFIXED64(14, m50.SCALAR, a60.LONG),
+    SINT32(15, m50.SCALAR, a60.INT),
+    SINT64(16, m50.SCALAR, a60.LONG),
+    GROUP(17, m50.SCALAR, a60.MESSAGE),
+    DOUBLE_LIST(18, m50.VECTOR, a60.DOUBLE),
+    FLOAT_LIST(19, m50.VECTOR, a60.FLOAT),
+    INT64_LIST(20, m50.VECTOR, a60.LONG),
+    UINT64_LIST(21, m50.VECTOR, a60.LONG),
+    INT32_LIST(22, m50.VECTOR, a60.INT),
+    FIXED64_LIST(23, m50.VECTOR, a60.LONG),
+    FIXED32_LIST(24, m50.VECTOR, a60.INT),
+    BOOL_LIST(25, m50.VECTOR, a60.BOOLEAN),
+    STRING_LIST(26, m50.VECTOR, a60.STRING),
+    MESSAGE_LIST(27, m50.VECTOR, a60.MESSAGE),
+    BYTES_LIST(28, m50.VECTOR, a60.BYTE_STRING),
+    UINT32_LIST(29, m50.VECTOR, a60.INT),
+    ENUM_LIST(30, m50.VECTOR, a60.ENUM),
+    SFIXED32_LIST(31, m50.VECTOR, a60.INT),
+    SFIXED64_LIST(32, m50.VECTOR, a60.LONG),
+    SINT32_LIST(33, m50.VECTOR, a60.INT),
+    SINT64_LIST(34, m50.VECTOR, a60.LONG),
+    DOUBLE_LIST_PACKED(35, m50.PACKED_VECTOR, a60.DOUBLE),
+    FLOAT_LIST_PACKED(36, m50.PACKED_VECTOR, a60.FLOAT),
+    INT64_LIST_PACKED(37, m50.PACKED_VECTOR, a60.LONG),
+    UINT64_LIST_PACKED(38, m50.PACKED_VECTOR, a60.LONG),
+    INT32_LIST_PACKED(39, m50.PACKED_VECTOR, a60.INT),
+    FIXED64_LIST_PACKED(40, m50.PACKED_VECTOR, a60.LONG),
+    FIXED32_LIST_PACKED(41, m50.PACKED_VECTOR, a60.INT),
+    BOOL_LIST_PACKED(42, m50.PACKED_VECTOR, a60.BOOLEAN),
+    UINT32_LIST_PACKED(43, m50.PACKED_VECTOR, a60.INT),
+    ENUM_LIST_PACKED(44, m50.PACKED_VECTOR, a60.ENUM),
+    SFIXED32_LIST_PACKED(45, m50.PACKED_VECTOR, a60.INT),
+    SFIXED64_LIST_PACKED(46, m50.PACKED_VECTOR, a60.LONG),
+    SINT32_LIST_PACKED(47, m50.PACKED_VECTOR, a60.INT),
+    SINT64_LIST_PACKED(48, m50.PACKED_VECTOR, a60.LONG),
+    GROUP_LIST(49, m50.VECTOR, a60.MESSAGE),
+    MAP(50, m50.MAP, a60.VOID);
+
+    private static final k50[] TI;
+    private final int WB;
+
+    static {
+        k50[] k50VarArrValues = values();
+        TI = new k50[k50VarArrValues.length];
+        for (k50 k50Var : k50VarArrValues) {
+            TI[k50Var.WB] = k50Var;
+        }
+    }
+
+    k50(int i, m50 m50Var, a60 a60Var) {
+        int i2;
+        this.WB = i;
+        int i3 = l50.j6[m50Var.ordinal()];
+        if (i3 == 1 || i3 == 2) {
+            a60Var.j6();
+        }
+        if (m50Var == m50.SCALAR && (i2 = l50.DW[a60Var.ordinal()]) != 1 && i2 == 2) {
+        }
+    }
+
+    public final int j6() {
+        return this.WB;
+    }
+}
